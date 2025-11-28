@@ -1,7 +1,7 @@
 import asyncio
 import json
 import typer
-from .annotator import annotate
+from cancerrag.annotator import annotate
 
 app = typer.Typer(help="CancerRAG — LLM-powered variant annotation")
 

@@ -3,8 +3,8 @@ import asyncio
 import json
 import os
 from openai import AsyncOpenAI
-from .databases import get_oncokb, get_civic
-from .prompts import PROMPT
+from cancerrag.databases import get_oncokb, get_civic
+from cancerrag.prompts import PROMPT
 
 from dotenv import load_dotenv
 load_dotenv()
