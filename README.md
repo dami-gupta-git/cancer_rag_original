@@ -38,30 +38,39 @@ OPENAI_API_KEY=sk-...
 
 ```bash
 # Basic usage with default tumor type
-cancerrag EGFR L858R
+cancerrag ALK EML4-ALK 
 
 # Specify tumor type
-cancerrag EGFR L858R --tumor "Lung Adenocarcinoma"
-
-# Short form
-cancerrag BRAF V600E -t "Melanoma"
+cancerrag ALK EML4-ALK -t "Non-Small Cell Lung Cancer"
 ```
 
 ### Example Output
 
 ```json
 {
-  "gene": "EGFR",
-  "variant": "L858R",
-  "classification": "Oncogenic",
-  "highest_level_of_evidence": "Level 1",
-  "recommended_therapies": [
-    "Osimertinib",
-    "Afatinib",
-    "Gefitinib"
+  "gene": "ALK",
+  "variant": "EML4-ALK",
+  "classification": "Unknown - not in curated databases",
+  "highest_level_of_evidence": "None",
+  "recommended_therapies": [],
+  "summary": "The EML4-ALK fusion gene is a well-known driver mutation in non-small cell lung cancer (NSCLC), typically resulting from a chromosomal rearrangement between the EML4 gene and the ALK gene. This fusion is associated with sensitivity to ALK inhibitors such as crizotinib. However, the specific variant 'EML4-ALK' was not found in the CIViC or COSMIC databases, which raises uncertainty regarding its clinical significance and therapeutic implications. It is important to note that this analysis is based on inference and not validated clinical annotation. The absence of this variant in established databases suggests that it may not be well-characterized or recognized in the current literature, and further research would be necessary to determine its role in NSCLC.",
+  "limitations": [
+    "Variant not found in CIViC or COSMIC",
+    "Analysis is LLM inference only"
   ],
-  "summary": "EGFR L858R is a classic activating mutation in lung adenocarcinoma with multiple FDA-approved EGFR inhibitors."
+  "_metadata": {
+    "confidence": "inferred",
+    "found_in_civic": false,
+    "found_in_cosmic": false,
+    "civic_evidence_count": 0,
+    "cosmic_mutation_count": 0,
+    "caveats": [
+      "Variant not found in CIViC or COSMIC databases",
+      "Analysis is LLM inference only - not validated clinical annotation"
+    ]
+  }
 }
+
 ```
 
 ## Installation from Source
