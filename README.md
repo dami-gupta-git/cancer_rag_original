@@ -38,41 +38,30 @@ OPENAI_API_KEY=sk-...
 
 ```bash
 # Basic usage with default tumor type
-cancerrag ALK EML4-ALK 
+cancerrag BRAF V600E 
 
 # Specify tumor type
-cancerrag ALK EML4-ALK -t "Non-Small Cell Lung Cancer"
+cancerrag BRAF V600E -t "Melanoma"
 ```
 
 ### Example Output
-
-```json
-{
-  "gene": "ALK",
-  "variant": "EML4-ALK",
-  "classification": "Unknown - not in curated databases",
-  "highest_level_of_evidence": "None",
-  "recommended_therapies": [],
-  "summary": "The EML4-ALK fusion gene is a well-known driver mutation in non-small cell lung cancer (NSCLC), typically resulting from a chromosomal rearrangement between the EML4 gene and the ALK gene. This fusion is associated ......",
-  "limitations": [
-    "Variant not found in CIViC or COSMIC",
-    "Analysis is LLM inference only"
-  ],
-  "_metadata": {
-    "confidence": "inferred",
-    "found_in_civic": false,
-    "found_in_cosmic": false,
-    "civic_evidence_count": 0,
-    "cosmic_mutation_count": 0,
-    "caveats": [
-      "Variant not found in CIViC or COSMIC databases",
-      "Analysis is LLM inference only - not validated clinical annotation"
-    ]
-  }
-}
-
 ```
-
+{
+  "gene": "BRAF",
+  "variant": "V600E",
+  "classification": "Oncogenic",
+  "highest_level_of_evidence": "Level 1",
+  "recommended_therapies": [
+      "Vemurafenib",
+      "Dabrafenib",
+      "Trametinib",
+      "Cetuximab",
+      "Irinotecan"
+  ],
+  "summary": "The BRAF V600E variant is a well-established oncogenic mutation commonly associated with melanoma and is targeted by specific therapies."
+}
+```
+  
 ## Installation from Source
 
 For development or customization:

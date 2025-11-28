@@ -18,7 +18,26 @@ async def annotate(gene: str, alteration: str, tumor_type: str = "Cancer") -> di
 
     # Summarize for prompt size
     oncokb_summary = oncokb.get("level", "No OncoKB data") if oncokb else "Not found"
-    civic_summary = "; ".join([e.get("name", "") for e in civic]) if civic else "No CIViC data"
+
+    # Format CIViC evidence data
+    if civic and civic.get("evidence_count", 0) > 0:
+        civic_parts = [f"Evidence items: {civic.get('evidence_count')}"]
+
+        if civic.get("diseases"):
+            diseases = ", ".join(civic.get("diseases", [])[:5])
+            civic_parts.append(f"Associated diseases: {diseases}")
+
+        if civic.get("therapies"):
+            therapies = ", ".join(civic.get("therapies", [])[:5])
+            civic_parts.append(f"Associated therapies: {therapies}")
+
+        if civic.get("variant_types"):
+            types = ", ".join(civic.get("variant_types", []))
+            civic_parts.append(f"Variant types: {types}")
+
+        civic_summary = "\n".join(civic_parts)
+    else:
+        civic_summary = "No CIViC data"
 
     response = await client.chat.completions.create(
         model="gpt-4o-mini",  # change to grok-beta / claude-3-5-sonnet / llama3.1:405b etc.
