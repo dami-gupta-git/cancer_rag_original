@@ -53,7 +53,7 @@ cancerrag ALK EML4-ALK -t "Non-Small Cell Lung Cancer"
   "classification": "Unknown - not in curated databases",
   "highest_level_of_evidence": "None",
   "recommended_therapies": [],
-  "summary": "The EML4-ALK fusion gene is a well-known driver mutation in non-small cell lung cancer (NSCLC), typically resulting from a chromosomal rearrangement between the EML4 gene and the ALK gene. This fusion is associated with sensitivity to ALK inhibitors such as crizotinib. However, the specific variant 'EML4-ALK' was not found in the CIViC or COSMIC databases, which raises uncertainty regarding its clinical significance and therapeutic implications. It is important to note that this analysis is based on inference and not validated clinical annotation. The absence of this variant in established databases suggests that it may not be well-characterized or recognized in the current literature, and further research would be necessary to determine its role in NSCLC.",
+  "summary": "The EML4-ALK fusion gene is a well-known driver mutation in non-small cell lung cancer (NSCLC), typically resulting from a chromosomal rearrangement between the EML4 gene and the ALK gene. This fusion is associated ......",
   "limitations": [
     "Variant not found in CIViC or COSMIC",
     "Analysis is LLM inference only"

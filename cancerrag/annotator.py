@@ -1,13 +1,14 @@
 
 import asyncio
 import json
+import os
 from openai import AsyncOpenAI
 from .databases import get_oncokb, get_civic
 from .prompts import PROMPT
 
 from dotenv import load_dotenv
 load_dotenv()
-client = AsyncOpenAI()  
+client = AsyncOpenAI(api_key=os.getenv("OPENAI_API_KEY"))  
 
 async def annotate(gene: str, alteration: str, tumor_type: str = "Cancer") -> dict:
     oncokb, civic = await asyncio.gather(
