@@ -78,3 +78,54 @@ async def get_civic(gene: str, alteration: str) -> Dict[str, Any]:
         }
 
         return result
+
+async def get_clinical_trials(gene: str, alteration: str, tumor_type: str = "Cancer") -> Dict[str, Any]:
+    """Fetch relevant clinical trials from ClinicalTrials.gov API."""
+    url = "https://clinicaltrials.gov/api/v2/studies"
+
+    # Build search query with gene and variant information
+    search_terms = f"{gene} {alteration} {tumor_type}"
+
+    params = {
+        "query.term": search_terms,
+        "filter.overallStatus": "RECRUITING",  # Only active trials
+        "pageSize": 5,  # Limit to top 5 most relevant
+        "format": "json"
+    }
+
+    async with httpx.AsyncClient(timeout=15.0) as client:
+        try:
+            r = await client.get(url, params=params)
+            if r.status_code != 200:
+                return {}
+
+            data = r.json()
+            studies = data.get("studies", [])
+
+            if not studies:
+                return {"trial_count": 0, "trials": []}
+
+            # Extract relevant trial information
+            trials = []
+            for study in studies:
+                protocol = study.get("protocolSection", {})
+                ident = protocol.get("identificationModule", {})
+                status = protocol.get("statusModule", {})
+                design = protocol.get("designModule", {})
+
+                trial_info = {
+                    "nct_id": ident.get("nctId", ""),
+                    "title": ident.get("briefTitle", ""),
+                    "status": status.get("overallStatus", ""),
+                    "phase": design.get("phases", ["N/A"])[0] if design.get("phases") else "N/A",
+                    "url": f"https://clinicaltrials.gov/study/{ident.get('nctId', '')}"
+                }
+                trials.append(trial_info)
+
+            return {
+                "trial_count": len(trials),
+                "trials": trials
+            }
+
+        except Exception:
+            return {"trial_count": 0, "trials": []}

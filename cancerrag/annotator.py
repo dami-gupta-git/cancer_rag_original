@@ -3,7 +3,7 @@ import asyncio
 import json
 import os
 from openai import AsyncOpenAI
-from cancerrag.databases import get_oncokb, get_civic
+from cancerrag.databases import get_oncokb, get_civic, get_clinical_trials
 from cancerrag.prompts import PROMPT
 
 from dotenv import load_dotenv
@@ -11,9 +11,10 @@ load_dotenv()
 client = AsyncOpenAI(api_key=os.getenv("OPENAI_API_KEY"))  
 
 async def annotate(gene: str, alteration: str, tumor_type: str = "Cancer") -> dict:
-    oncokb, civic = await asyncio.gather(
+    oncokb, civic, clinical_trials = await asyncio.gather(
         get_oncokb(gene, alteration, tumor_type),
-        get_civic(gene, alteration)
+        get_civic(gene, alteration),
+        get_clinical_trials(gene, alteration, tumor_type)
     )
 
     # Summarize for prompt size
@@ -39,6 +40,18 @@ async def annotate(gene: str, alteration: str, tumor_type: str = "Cancer") -> di
     else:
         civic_summary = "No CIViC data"
 
+    # Format Clinical Trials data
+    if clinical_trials and clinical_trials.get("trial_count", 0) > 0:
+        trials = clinical_trials.get("trials", [])
+        trial_parts = [f"Active trials found: {clinical_trials.get('trial_count')}"]
+
+        for trial in trials[:3]:  # Show top 3 trials
+            trial_parts.append(f"- {trial.get('nct_id')}: {trial.get('title')} (Phase {trial.get('phase')})")
+
+        clinical_trials_summary = "\n".join(trial_parts)
+    else:
+        clinical_trials_summary = "No active clinical trials found"
+
     response = await client.chat.completions.create(
         model="gpt-4o-mini",  # change to grok-beta / claude-3-5-sonnet / llama3.1:405b etc.
         messages=[{
@@ -48,7 +61,8 @@ async def annotate(gene: str, alteration: str, tumor_type: str = "Cancer") -> di
                 alteration=alteration,
                 tumor_type=tumor_type,
                 oncokb_summary=oncokb_summary,
-                civic_summary=civic_summary
+                civic_summary=civic_summary,
+                clinical_trials_summary=clinical_trials_summary
             )
         }],
         temperature=0.1,

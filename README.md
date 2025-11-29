@@ -1,17 +1,18 @@
 # CancerRAG
 
-**LLM-powered cancer variant annotation with real-time clinical evidence**
+**LLM-powered cancer variant annotation with real-time clinical evidence and clinical trials**
 
-CancerRAG combines the power of Large Language Models with clinical databases (OncoKB and CIViC) to provide rapid, evidence-based interpretation of cancer genetic variants. Designed for clinicians, researchers, and bioinformaticians who need quick, contextual analysis of cancer mutations.
+CancerRAG combines the power of Large Language Models with clinical databases (OncoKB, CIViC, and ClinicalTrials.gov) to provide rapid, evidence-based interpretation of cancer genetic variants. Designed for clinicians, researchers, and bioinformaticians who need quick, contextual analysis of cancer mutations with relevant clinical trial information.
 
 [![Python 3.9+](https://img.shields.io/badge/python-3.9+-blue.svg)](https://www.python.org/downloads/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 ## Features
 
-- **Real-time Evidence Retrieval**: Fetches variant data from OncoKB and CIViC databases in parallel
+- **Real-time Evidence Retrieval**: Fetches variant data from OncoKB, CIViC, and ClinicalTrials.gov in parallel
+- **Clinical Trials Integration**: Finds active recruiting trials relevant to the variant
 - **LLM-Powered Analysis**: Uses GPT-4, Claude, Grok, or local models for intelligent interpretation
-- **Structured Output**: Returns JSON with classification, evidence levels, and therapy recommendations
+- **Structured Output**: Returns JSON with classification, evidence levels, therapy recommendations, and clinical trials
 - **CLI Interface**: Simple command-line tool for rapid queries
 - **Flexible LLM Support**: Works with OpenAI, Anthropic, Grok, or local LLMs via LiteLLM
 
@@ -57,6 +58,10 @@ cancerrag BRAF V600E -t "Melanoma"
       "Trametinib",
       "Cetuximab",
       "Irinotecan"
+  ],
+  "clinical_trials": [
+      "NCT05555699: BRAF V600E Mutation in Melanoma (Phase 3)",
+      "NCT04726865: Targeted Therapy for BRAF Mutations (Phase 2)"
   ],
   "summary": "The BRAF V600E variant is a well-established oncogenic mutation commonly associated with melanoma and is targeted by specific therapies."
 }
@@ -122,7 +127,7 @@ CancerRAG/
 │   ├── __init__.py       # Package metadata
 │   ├── cli.py            # Command-line interface (Typer)
 │   ├── annotator.py      # Core annotation logic
-│   ├── databases.py      # OncoKB & CIViC API clients
+│   ├── databases.py      # OncoKB, CIViC & ClinicalTrials.gov API clients
 │   └── prompts.py        # LLM prompt templates
 ├── examples/
 │   ├── egfr.json         # Example EGFR output
@@ -134,10 +139,10 @@ CancerRAG/
 ## How It Works
 
 1. **Input**: User provides gene symbol, variant, and optionally tumor type
-2. **Data Retrieval**: Async HTTP requests fetch evidence from OncoKB and CIViC
+2. **Data Retrieval**: Async HTTP requests fetch evidence from OncoKB, CIViC, and ClinicalTrials.gov in parallel
 3. **Summarization**: Evidence is condensed for efficient LLM processing
-4. **LLM Analysis**: Prompt instructs LLM to act as a genomic pathologist
-5. **Structured Output**: LLM returns JSON with classification and recommendations
+4. **LLM Analysis**: Prompt instructs LLM to act as a genomic pathologist, considering all available evidence and clinical trials
+5. **Structured Output**: LLM returns JSON with classification, therapy recommendations, and relevant clinical trials
 
 ## API Reference
 
@@ -181,6 +186,7 @@ asyncio.run(main())
   "classification": string,          // Oncogenic | Likely Oncogenic | VUS | Benign
   "highest_level_of_evidence": string, // Level 1-4 or N/A
   "recommended_therapies": string[], // List of therapy names
+  "clinical_trials": string[],       // Active recruiting clinical trials
   "summary": string                  // Plain-English explanation
 }
 ```
@@ -189,6 +195,7 @@ asyncio.run(main())
 
 - **OncoKB**: Precision oncology knowledge base from Memorial Sloan Kettering
 - **CIViC**: Clinical Interpretation of Variants in Cancer (community-curated)
+- **ClinicalTrials.gov**: NIH database of active recruiting clinical trials for cancer variants
 
 ## Development
 
@@ -213,12 +220,14 @@ black cancerrag/
 
 ## Roadmap
 
+- [x] Clinical trials integration (ClinicalTrials.gov)
 - [ ] Add ClinVar and COSMIC database integration
 - [ ] Implement batch processing for VCF files
 - [ ] Add evidence citation tracking
 - [ ] Support multi-model comparison
 - [ ] Generate PDF reports for tumor boards
 - [ ] Add germline vs somatic variant handling
+- [ ] Filter clinical trials by location/eligibility criteria
 
 ## Contributing
 
@@ -245,6 +254,7 @@ If you use CancerRAG in your research, please cite:
 
 - OncoKB API for precision oncology data
 - CIViC for community-curated variant interpretations
+- ClinicalTrials.gov for clinical trial information
 - OpenAI, Anthropic, and xAI for LLM access
 
 ## Contact
