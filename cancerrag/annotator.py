@@ -52,6 +52,10 @@ async def annotate(gene: str, alteration: str, tumor_type: str = "Cancer") -> di
     else:
         clinical_trials_summary = "No active clinical trials found"
 
+    # Extract COSMIC ID from CIViC data
+    cosmic_id = civic.get("cosmic_id", "") if civic else ""
+    cosmic_summary = f"COSMIC ID: {cosmic_id}" if cosmic_id else "No COSMIC ID found"
+
     response = await client.chat.completions.create(
         model="gpt-4o-mini",  # change to grok-beta / claude-3-5-sonnet / llama3.1:405b etc.
         messages=[{
@@ -62,7 +66,8 @@ async def annotate(gene: str, alteration: str, tumor_type: str = "Cancer") -> di
                 tumor_type=tumor_type,
                 oncokb_summary=oncokb_summary,
                 civic_summary=civic_summary,
-                clinical_trials_summary=clinical_trials_summary
+                clinical_trials_summary=clinical_trials_summary,
+                cosmic_summary=cosmic_summary
             )
         }],
         temperature=0.1,

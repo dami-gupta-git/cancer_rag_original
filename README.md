@@ -10,6 +10,7 @@ CancerRAG combines the power of Large Language Models with clinical databases (O
 ## Features
 
 - **Real-time Evidence Retrieval**: Fetches variant data from OncoKB, CIViC, and ClinicalTrials.gov in parallel
+- **COSMIC ID Integration**: Automatically retrieves COSMIC database identifiers from CIViC
 - **Clinical Trials Integration**: Finds active recruiting trials relevant to the variant
 - **LLM-Powered Analysis**: Uses GPT-4, Claude, Grok, or local models for intelligent interpretation
 - **Structured Output**: Returns JSON with classification, evidence levels, therapy recommendations, and clinical trials
@@ -50,6 +51,7 @@ cancerrag BRAF V600E -t "Melanoma"
 {
   "gene": "BRAF",
   "variant": "V600E",
+  "cosmic_id": "COSV57014428",
   "classification": "Oncogenic",
   "highest_level_of_evidence": "Level 1",
   "recommended_therapies": [
@@ -183,6 +185,7 @@ asyncio.run(main())
 {
   "gene": string,                    // Gene symbol
   "variant": string,                 // Variant alteration
+  "cosmic_id": string,               // COSMIC database identifier (from CIViC)
   "classification": string,          // Oncogenic | Likely Oncogenic | VUS | Benign
   "highest_level_of_evidence": string, // Level 1-4 or N/A
   "recommended_therapies": string[], // List of therapy names
@@ -194,7 +197,7 @@ asyncio.run(main())
 ## Data Sources
 
 - **OncoKB**: Precision oncology knowledge base from Memorial Sloan Kettering
-- **CIViC**: Clinical Interpretation of Variants in Cancer (community-curated)
+- **CIViC**: Clinical Interpretation of Variants in Cancer (community-curated, includes COSMIC IDs via MyVariant.info)
 - **ClinicalTrials.gov**: NIH database of active recruiting clinical trials for cancer variants
 
 ## Development

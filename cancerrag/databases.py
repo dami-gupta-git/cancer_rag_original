@@ -34,6 +34,10 @@ async def get_civic(gene: str, alteration: str) -> Dict[str, Any]:
             therapies {
               name
             }
+            myVariantInfo {
+              cosmicId
+              clinvarId
+            }
           }
         }
       }
@@ -69,12 +73,16 @@ async def get_civic(gene: str, alteration: str) -> Dict[str, Any]:
             variant_data = edges[0]["node"]
 
         # Extract relevant information
+        my_variant_info = variant_data.get("myVariantInfo", {}) or {}
+
         result = {
             "variant_name": variant_data.get("name", ""),
             "variant_types": [vt.get("name") for vt in variant_data.get("variantTypes", [])],
             "evidence_count": variant_data.get("evidenceItemCount", 0),
             "diseases": [d.get("name") for d in variant_data.get("diseases", [])],
-            "therapies": [t.get("name") for t in variant_data.get("therapies", [])]
+            "therapies": [t.get("name") for t in variant_data.get("therapies", [])],
+            "cosmic_id": my_variant_info.get("cosmicId", ""),
+            "clinvar_id": my_variant_info.get("clinvarId", "")
         }
 
         return result
